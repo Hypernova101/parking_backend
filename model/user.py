@@ -74,7 +74,6 @@ class User(db.Model, UserMixin):
             password (str): The password for the user.
             role (str): The role of the user within the application. Defaults to "User".
             pfp (str): The path to the user's profile picture. Defaults to an empty string.
-            followers (str): The user's followers. Defaults to an empty string.
         """
         self._name = name
         self._uid = uid
@@ -95,16 +94,6 @@ class User(db.Model, UserMixin):
         """
         return self._savedlocation
 
-    @property
-    def followers(self):
-        """
-        Gets the user's followers.
-        
-        Returns:
-            str: The user's followers. Seperatred by commas.
-        """
-        return self._followers
-
     @savedlocation.setter
     def savedlocation(self, savedlocation):
         """
@@ -117,19 +106,6 @@ class User(db.Model, UserMixin):
             self._savedlocation = savedlocation
         else:
             self._savedlocation = ""
-
-    @followers.setter
-    def followers(self, followers):
-        """
-        Sets the user's followers.
-        
-        Args:
-            followers (str): The new followers for the user.
-        """
-        if isinstance(followers, str):
-            self._followers = followers
-        else:
-            self._followers = ""
 
 
     def get_id(self):
@@ -388,7 +364,6 @@ class User(db.Model, UserMixin):
             "pfp": self._pfp,
             "car": self._car,
             "savedlocation": self._savedlocation,  # Include interests in the dictionary
-            "followers": self._followers  # Include followers in the dictionary
         }
         return data
         
@@ -410,7 +385,6 @@ class User(db.Model, UserMixin):
         password = inputs.get("password", "")
         pfp = inputs.get("pfp", None)
         savedlocation = inputs.get("savedlocation", None)
-        followers = inputs.get("followers", None)
 
         # Update table with new data
         if name:
@@ -423,8 +397,6 @@ class User(db.Model, UserMixin):
             self.pfp = pfp
         if savedlocation is not None:
             self.savedlocation = savedlocation
-        if followers is not None:
-            self.followers = followers
 
         # Check this on each update
         self.set_email()
