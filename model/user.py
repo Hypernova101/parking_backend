@@ -59,13 +59,12 @@ class User(db.Model, UserMixin):
     _role = db.Column(db.String(20), default="User", nullable=False)
     _pfp = db.Column(db.String(255), unique=False, nullable=True)
     _car = db.Column(db.String(255), unique=False, nullable=True)
-    _interests = db.Column(db.String(255), unique=False, nullable=True)  # New field added here
-    _followers = db.Column(db.String(255), unique=False, nullable=True)  # New field added here
+    _savedlocation = db.Column(db.String(255), unique=False, nullable=True)  # New field added here
 
     posts = db.relationship('Post', backref='author', lazy=True)
                                  
     
-    def __init__(self, name, uid, password="", role="User", pfp='', car='', email='?', interests='', followers=''):
+    def __init__(self, name, uid, password="", role="User", pfp='', car='', email='?', savedlocation=''):
         """
         Constructor, 1st step in object creation.
         
@@ -75,7 +74,6 @@ class User(db.Model, UserMixin):
             password (str): The password for the user.
             role (str): The role of the user within the application. Defaults to "User".
             pfp (str): The path to the user's profile picture. Defaults to an empty string.
-            interests (str): The user's interests. Defaults to an empty string.
             followers (str): The user's followers. Defaults to an empty string.
         """
         self._name = name
@@ -85,18 +83,17 @@ class User(db.Model, UserMixin):
         self._role = role
         self._pfp = pfp
         self._car = car
-        self._interests = interests
-        self._followers = followers
+        self._savedlocation = savedlocation
 
     @property
-    def interests(self):
+    def savedlocation(self):
         """
-        Gets the user's interests.
+        Gets the user's saved location.
         
         Returns:
             str: The user's interests. Seperatred by commas.
         """
-        return self._interests
+        return self._savedlocation
 
     @property
     def followers(self):
@@ -108,18 +105,18 @@ class User(db.Model, UserMixin):
         """
         return self._followers
 
-    @interests.setter
-    def interests(self, interests):
+    @savedlocation.setter
+    def savedlocation(self, savedlocation):
         """
-        Sets the user's interests.
+        Sets the user's savedlocation.
         
         Args:
-            interests (str): The new interests for the user.
+            savedlocation (str): The new savedlocation for the user.
         """
-        if isinstance(interests, str):
-            self._interests = interests
+        if isinstance(savedlocation, str):
+            self._savedlocation = savedlocation
         else:
-            self._interests = ""
+            self._savedlocation = ""
 
     @followers.setter
     def followers(self, followers):
@@ -390,7 +387,7 @@ class User(db.Model, UserMixin):
             "role": self._role,
             "pfp": self._pfp,
             "car": self._car,
-            "interests": self._interests,  # Include interests in the dictionary
+            "savedlocation": self._savedlocation,  # Include interests in the dictionary
             "followers": self._followers  # Include followers in the dictionary
         }
         return data
@@ -403,7 +400,7 @@ class User(db.Model, UserMixin):
             inputs (dict): A dictionary containing the new data for the user.
         
         Returns:
-            User: The updated user object, or None on error.
+            User: The updated user object, or None on error. savedlocation
         """
         if not isinstance(inputs, dict):
             return self
@@ -412,7 +409,7 @@ class User(db.Model, UserMixin):
         uid = inputs.get("uid", "")
         password = inputs.get("password", "")
         pfp = inputs.get("pfp", None)
-        interests = inputs.get("interests", None)
+        savedlocation = inputs.get("savedlocation", None)
         followers = inputs.get("followers", None)
 
         # Update table with new data
@@ -424,8 +421,8 @@ class User(db.Model, UserMixin):
             self.set_password(password)
         if pfp is not None:
             self.pfp = pfp
-        if interests is not None:
-            self.interests = interests
+        if savedlocation is not None:
+            self.savedlocation = savedlocation
         if followers is not None:
             self.followers = followers
 
@@ -574,120 +571,21 @@ def initUsers():
                 pfp='toby.png',
                 car='toby_car.png',
                 role="Admin",
-                interests="Inventing, Reading, Physics",
-                followers="niko, bobby"
+                savedlocation="123 Main St."
             ),
             User(
                 name='Grace Hopper',
                 uid=app.config['DEFAULT_USER'],
                 password=app.config['DEFAULT_PASSWORD'],
                 pfp='hop.png',
-                interests="Inventing, Reading, Physics",
-                followers="niko"
+                savedlocation="123 Main St., 123 Main Pl.",
             ),
             User(
                 name='Nicholas Tesla',
                 uid='niko',
                 password='123niko',
                 pfp='niko.png',
-                interests="Electrical Engineering, Innovation, Nature, Inventing"
-            ),
-            User(
-                name='Bobby Bapat',
-                uid='bobby',
-                password='1111',
-                followers="niko"
-            ),
-            User(
-                name='Random Chatroom',
-                uid=app.config['ADMIN_USER'],
-                password='password',
-                interests="Soccer, Physics",
-                followers="bobby"
-            ),
-            User(
-                name='Albert Einstein',
-                uid='einstein',
-                password='e=mc2',
-                interests="Physics, Mathematics, Nature"
-            ),
-            User(
-                name='Marie Curie',
-                uid='curie',
-                password='radium123',
-                interests="Chemistry, Physics, Research"
-            ),
-            User(
-                name='Alan Turing',
-                uid='turing',
-                password='enigma1942',
-                interests="Mathematics, Programming, Cryptography"
-            ),
-            User(
-                name='Ada Lovelace',
-                uid='ada',
-                password='lovelace99',
-                interests="Mathematics, Programming, Algorithms"
-            ),
-            User(
-                name='Galileo Galilei',
-                uid='galileo',
-                password='stars123',
-                interests="Astronomy, Physics, Invention"
-            ),
-            User(
-                name='Leonardo Da Vinci',
-                uid='davinci',
-                password='monaLisa',
-                interests="Art, Innovation, Anatomy, Nature"
-            ),
-            User(
-                name='Isaac Newton',
-                uid='newton',
-                password='applefall',
-                interests="Physics, Mathematics, Nature, Inventing"
-            ),
-            User(
-                name='Katherine Johnson',
-                uid='kjohnson',
-                password='apollo11',
-                interests="Mathematics, Programming, Aerospace"
-            ),
-            User(
-                name='Charles Darwin',
-                uid='darwin',
-                password='evolution123',
-                interests="Nature, Biology, Research, Writing"
-            ),
-            User(
-                name='Carl Sagan',
-                uid='sagan',
-                password='cosmos42',
-                interests="Astronomy, Physics, Writing"
-            ),
-            User(
-                name='Rosalind Franklin',
-                uid='rosalind',
-                password='dna1952',
-                interests="Chemistry, Biology, Research"
-            ),
-            User(
-                name='Alexander Graham Bell',
-                uid='bell',
-                password='phone1876',
-                interests="Invention, Communication, Physics"
-            ),
-            User(
-                name='John von Neumann',
-                uid='neumann',
-                password='gameTheory1',
-                interests="Mathematics, Programming, Cryptography, Algorithms"
-            ),
-            User(
-                name='Rachel Carson',
-                uid='carson',
-                password='silentSpring',
-                interests="Nature, Writing, Environmental Science"
+                savedlocation="123 Main St."
             )
         ]
 
