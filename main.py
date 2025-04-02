@@ -34,6 +34,7 @@ from api.usettings import settings_api
 from api.user_met import user_met_api
 from api.post_met import post_met_api
 from api.poll_met import poll_met_api
+from api.savedlocation import savedlocations_api
 
 from api.leaderboard import leaderboard_api
 
@@ -80,6 +81,7 @@ app.register_blueprint(language_met_api)
 app.register_blueprint(user_met_api)
 app.register_blueprint(post_met_api)
 app.register_blueprint(poll_met_api)
+app.register_blueprint(savedlocations_api)
 
 
 # Tell Flask-Login the view function name of your login route
