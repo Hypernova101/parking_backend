@@ -30,7 +30,7 @@ from api.interests import interests_api  # Import the new interests API
 from api.chat_met import chat_met_api
 from api.vote_met import vote_met_api
 from api.language_met import language_met_api
-from api.usettings import settings_api
+# from api.usettings import settings_api
 from api.user_met import user_met_api
 from api.post_met import post_met_api
 from api.titanic import titanic_api
@@ -57,7 +57,7 @@ from model.chat import Chat, initChats
 
 from model.topusers import TopUser
 from model.topinterests import TopInterest, initTopInterests
-from model.usettings import Settings  # Import the Settings model
+# from model.usettings import Settings  # Import the Settings model
 from model.titanic import TitanicModel  # Import the TitanicModel class
 from model.titanic import Passenger, initPassengers
 # server only Views
@@ -98,7 +98,6 @@ def unauthorized_callback():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 @app.context_processor
 def inject_user():
     return dict(current_user=current_user)
@@ -209,12 +208,12 @@ def pollData():
     users = User.query.all()
     return render_template("pollData.html", user_data=users)
 
-@app.route('/users/settings')
-@admin_required
-@login_required
-def usettings():
-    users = User.query.all()
-    return render_template("usettings.html", user_data=users)
+# @app.route('/users/settings')
+# @admin_required
+# @login_required
+# def usettings():
+#     users = User.query.all()
+#     return render_template("usettings.html", user_data=users)
 
 @app.route('/users/reports')
 @admin_required
