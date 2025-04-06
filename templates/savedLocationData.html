@@ -1,0 +1,122 @@
+{% extends "layouts/base.html" %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <h1>User Management</h1>
+    <table class="table table-striped" id="userTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>UID</th>
+                <th>Name</th>
+                <th>Saved Location</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in user_data %}
+            {% if user.id == current_user.id or current_user.role == 'Admin' %}
+            <tr data-user-id="{{ user.id }}">
+                <td>{{ user.id }}</td>
+                <td>{{ user.uid }}</td>
+                <td>{{ user.name }}</td>
+                <td>
+                    <span class="saved-location-text">{{ user.savedlocation or "—" }}</span>
+                    <input type="text" class="form-control saved-location-input d-none" value="{{ user.savedlocation }}">
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-secondary edit-location-btn">Edit</button>
+                    <button class="btn btn-sm btn-success save-location-btn d-none">Save</button>
+                    <button class="btn btn-sm btn-danger delete-location-btn">Delete All</button>
+                </td>                
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $("#userTable").DataTable();
+
+            $(".edit-location-btn").on("click", function () {
+                const $row = $(this).closest("tr");
+                $row.find(".saved-location-text").addClass("d-none");
+                $row.find(".saved-location-input").removeClass("d-none");
+                $(this).addClass("d-none");
+                $row.find(".save-location-btn").removeClass("d-none");
+            });
+
+            $(".save-location-btn").on("click", function () {
+                const $row = $(this).closest("tr");
+                const newLocation = $row.find(".saved-location-input").val().trim();
+                const uid = $row.find("td:nth-child(2)").text().trim();  // UID is in the 2nd column
+
+                fetch("/api/savedlocationsmet", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        savedlocation: newLocation,
+                        uid: uid
+                    })
+                })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                .then(result => {
+                    if (result.status === 200) {
+                        $row.find(".saved-location-text").text(newLocation || "—").removeClass("d-none");
+                        $row.find(".saved-location-input").addClass("d-none");
+                        $row.find(".save-location-btn").addClass("d-none");
+                        $row.find(".edit-location-btn").removeClass("d-none");
+                        alert(result.body.message);
+                    } else {
+                        alert(result.body.message || "Update failed.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Error updating location:", err);
+                    alert("An error occurred.");
+                });
+            });
+
+            $(".delete-location-btn").on("click", function () {
+                const $row = $(this).closest("tr");
+                const uid = $row.find("td:nth-child(2)").text().trim();  // 2nd column is UID
+
+                if (!confirm(`Delete all saved locations for user "${uid}"?`)) return;
+
+                fetch("/api/savedlocationsmet", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        delete_all: true,
+                        uid: uid
+                    })
+                })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                .then(result => {
+                    if (result.status === 200) {
+                        $row.find(".saved-location-text").text("—");
+                        $row.find(".saved-location-input").val("");
+                        alert(result.body.message);
+                    } else {
+                        alert(result.body.message || "Failed to delete locations.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Error deleting locations:", err);
+                    alert("An error occurred.");
+                });
+            });
+        });
+    </script>
+</div>
+
+{% endblock %}
+
+{% block background %}
+{% endblock %}

@@ -36,7 +36,7 @@ from api.post_met import post_met_api
 from api.titanic import titanic_api
 from api.poll_met import poll_met_api
 from api.savedlocation import savedlocations_api
-
+from api.savedlocation_met import savedlocations_met_api
 from api.leaderboard import leaderboard_api
 
 from api.vote import vote_api
@@ -86,6 +86,7 @@ app.register_blueprint(post_met_api)
 app.register_blueprint(poll_met_api)
 app.register_blueprint(savedlocations_api)
 app.register_blueprint(titanic_api)
+app.register_blueprint(savedlocations_met_api)
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"
@@ -165,6 +166,7 @@ def user_index():
 @login_required
 def utable():
     users = User.query.all()
+    print(users)
     return render_template("utable.html", user_data=users)
 
 @app.route('/users/table2')
@@ -193,6 +195,13 @@ def postData():
 def chatData():
     users = User.query.all()
     return render_template("chatData.html", user_data=users)
+
+@app.route('/savedLocationdata')
+@admin_required
+@login_required
+def savedLocationData():
+    users = User.query.all()
+    return render_template("savedLocationData.html", user_data=users)
 
 @app.route('/languagedata')
 @admin_required
