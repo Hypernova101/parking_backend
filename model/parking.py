@@ -4,9 +4,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 
-
 # Load the data
-df = pd.read_csv('treas_parking_payments_2025_datasd (1).csv')
+df = pd.read_csv('datasets/treas_parking_payments_2025_datasd.csv')
+
 
 # Data wrangling
 df['date_trans_start'] = pd.to_datetime(df['date_trans_start'], errors='coerce')
@@ -65,3 +65,7 @@ def predict_parking_availability(pole_id, day_of_week, hour_of_day):
   probability = logreg_model.predict_proba(input_data_imputed)[0][1]
   
   return probability * 100
+  
+# Predict parking availability for pole_id 'P510', on Tuesday (day_of_week=1) at 10 AM (hour_of_day=10)
+availability_percentage = predict_parking_availability('P510', 1, 10) 
+print(f"Parking availability percentage: {availability_percentage:.2f}%")
