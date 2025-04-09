@@ -565,6 +565,7 @@ def initUsers():
         for user in users:
             try:
                 user.create()
+                print("ADDED")
             except IntegrityError:
                 '''fails with bad or duplicate data'''
                 db.session.remove()
