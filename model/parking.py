@@ -7,7 +7,6 @@ from sklearn.linear_model import LogisticRegression
 # Load the data
 df = pd.read_csv('datasets/treas_parking_payments_2025_datasd.csv')
 
-
 # Data wrangling
 df['date_trans_start'] = pd.to_datetime(df['date_trans_start'], errors='coerce')
 df['day_of_week'] = df['date_trans_start'].dt.dayofweek

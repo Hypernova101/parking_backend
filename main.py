@@ -30,10 +30,10 @@ from api.interests import interests_api  # Import the new interests API
 from api.chat_met import chat_met_api
 from api.vote_met import vote_met_api
 from api.language_met import language_met_api
-# from api.usettings import settings_api
+from api.usettings import settings_api
 from api.user_met import user_met_api
 from api.post_met import post_met_api
-# from api.titanic import titanic_api
+from api.titanic import titanic_api
 from api.poll_met import poll_met_api
 from api.savedlocation import savedlocations_api
 from api.savedlocation_met import savedlocations_met_api
@@ -57,7 +57,7 @@ from model.chat import Chat, initChats
 
 from model.topusers import TopUser
 from model.topinterests import TopInterest, initTopInterests
-# from model.usettings import Settings  # Import the Settings model
+from model.usettings import Settings  # Import the Settings model
 # from model.titanic import TitanicModel  # Import the TitanicModel class
 # from model.titanic import Passenger, initPassengers
 # server only Views
