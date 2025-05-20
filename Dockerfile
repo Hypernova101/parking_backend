@@ -1,6 +1,6 @@
 FROM docker.io/python:3.12
 
-WORKDIR /home/ubuntu/prism_backend
+WORKDIR /home/ubuntu/parking_backend
 
 RUN ./scripts/db_backup.py
 RUN ./scripts/db_init.py
@@ -16,9 +16,9 @@ COPY . /
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install gunicorn
 
-ENV GUNICORN_CMD_ARGS="--workers=3 --bind=0.0.0.0:8505"
+ENV GUNICORN_CMD_ARGS="--workers=3 --bind=0.0.0.0:8000"
 
-EXPOSE 8505
+EXPOSE 8000
 
 # Define environment variable
 ENV FLASK_ENV=deployed
