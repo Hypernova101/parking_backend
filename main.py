@@ -304,6 +304,19 @@ def handle_player_score(data):
     leaderboard = sorted(players, key=lambda x: x["score"], reverse=True)
     emit("leaderboard_update", leaderboard, broadcast=True)
 
+@socketio.on("clear_leaderboard")
+def handle_clear_leaderboard():
+    global players
+    players = []
+    emit("leaderboard_update", players, broadcast=True)
+
+@socketio.on("get_leaderboard")
+def handle_get_leaderboard():
+    # Sort and emit current leaderboard
+    leaderboard = sorted(players, key=lambda x: x["score"], reverse=True)
+    emit("leaderboard_update", leaderboard)
+
+
 
 # Define a command to run the data generation functions
 @custom_cli.command('generate_data')
