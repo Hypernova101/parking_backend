@@ -88,7 +88,7 @@ app.register_blueprint(poll_met_api)
 app.register_blueprint(savedlocations_api)
 # app.register_blueprint(titanic_api)
 app.register_blueprint(savedlocations_met_api)
-app.register_blueprint(parking_api)
+# app.register_blueprint(parking_api)
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"
