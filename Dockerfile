@@ -1,20 +1,24 @@
-FROM docker.io/python:3.11
+FROM python:3.11
 
-WORKDIR /
+WORKDIR /app
 
-# --- [Install python and pip] ---
+# Install dependencies
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y python3 python3-pip git
-COPY . /
+    apt-get install -y git && \
+    pip install --no-cache-dir --upgrade pip
 
+COPY . /app
+
+# Install Python requirements
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn
 
-ENV GUNICORN_CMD_ARGS="--workers=1 --bind=0.0.0.0:8000"
+# Add WebSocket support
+RUN pip install eventlet
 
+# Expose the port used by your Flask-SocketIO server
 EXPOSE 8000
 
-# Define environment variable
 ENV FLASK_ENV=production
 
-CMD [ "gunicorn", "main:app" ]
+# Use `eventlet` with `flask_socketio`
+CMD ["python3", "main.py"]

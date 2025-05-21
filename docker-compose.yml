@@ -1,12 +1,12 @@
-version: '3'
+version: '3.9'
 services:
-        web:
-                image: parking
-                build: .
-                env_file:
-                        - .env
-                ports:
-                        - "8000:8000"
-                volumes:
-                        - ./instance:/instance
-                restart: unless-stopped
+  web:
+    image: parking
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./instance:/instance
+    restart: unless-stopped
