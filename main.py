@@ -280,7 +280,7 @@ def reset_password(user_id):
 # Create an AppGroup for custom commands
 custom_cli = AppGroup('custom', help='Custom commands')
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins=[])
 
 players = []  # Keep a list of players and scores
 
