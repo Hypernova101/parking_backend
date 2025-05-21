@@ -280,7 +280,12 @@ def reset_password(user_id):
 # Create an AppGroup for custom commands
 custom_cli = AppGroup('custom', help='Custom commands')
 
-socketio = SocketIO(app, cors_allowed_origins=[])
+socketio = SocketIO(app, cors_allowed_origins=[
+    "https://hypernova101.github.io",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000"
+])
+
 
 players = []  # Keep a list of players and scores
 
