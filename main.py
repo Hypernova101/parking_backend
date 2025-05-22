@@ -9,6 +9,7 @@ from flask_login import current_user, login_required
 from flask import current_app
 from werkzeug.security import generate_password_hash
 import shutil
+
 from functools import wraps
 from flask_socketio import SocketIO, send, emit
 
@@ -45,6 +46,8 @@ from api.teaminfo import team_member_api
 
 from api.rate import rate_api
 from api.flashcard import flashcard_api
+from api.feedback import feedback_api
+
 # database Initialization functions
 from model.rate import Rate, initRates
 from model.flashcard import Flashcard, initFlashcards
@@ -63,6 +66,7 @@ from model.chat import Chat, initChats
 
 from model.topusers import TopUser
 from model.topinterests import TopInterest, initTopInterests
+from model.feedback import Feedback
 # from model.usettings import Settings  # Import the Settings model
 # from model.titanic import TitanicModel  # Import the TitanicModel class
 # from model.titanic import Passenger, initPassengers
@@ -96,6 +100,7 @@ app.register_blueprint(savedlocations_met_api)
 # app.register_blueprint(parking_api)
 app.register_blueprint(rate_api)
 app.register_blueprint(flashcard_api)
+app.register_blueprint(feedback_api)
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"

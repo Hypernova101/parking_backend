@@ -16,8 +16,16 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Allowed servers for cross-origin resource sharing (CORS), these are GitHub Pages and localhost for GitHub Pages testing
-cors = CORS(app, supports_credentials=True, origins=['http://localhost:8000', 'http://127.0.0.1:8000', 'https://hypernova101.github.io'])
+from flask_cors import CORS
+
+CORS(app, supports_credentials=True, origins=[
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost:4887',
+    'http://127.0.0.1:4887',
+    'https://hypernova101.github.io'
+])
+
 
 
 
