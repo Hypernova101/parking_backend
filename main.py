@@ -42,7 +42,12 @@ from api.leaderboard import leaderboard_api
 
 from api.vote import vote_api
 from api.teaminfo import team_member_api
+
+from api.rate import rate_api
+from api.flashcard import flashcard_api
 # database Initialization functions
+from model.rate import Rate, initRates
+from model.flashcard import Flashcard, initFlashcards
 from model.user import User, initUsers
 from model.section import Section, initSections
 from model.group import Group, initGroups
@@ -89,6 +94,8 @@ app.register_blueprint(savedlocations_api)
 # app.register_blueprint(titanic_api)
 app.register_blueprint(savedlocations_met_api)
 # app.register_blueprint(parking_api)
+app.register_blueprint(rate_api)
+app.register_blueprint(flashcard_api)
 
 # Tell Flask-Login the view function name of your login route
 login_manager.login_view = "login"
@@ -337,6 +344,8 @@ def generate_data():
     initPlayers()
     initLanguages()
     initPolls()
+    initRates()
+    initFlashcards()
     
 # Backup the old database
 def backup_database(db_uri, backup_uri):
@@ -360,6 +369,8 @@ def extract_data():
         data['school_classes'] = [school_class.read() for school_class in SchoolClass.query.all()]
         data['chat'] = [chat.read() for chat in Chat.query.all()]
         data['votes'] = [vote.read() for vote in Vote.query.all()]
+        data['rates'] = [rate.read() for rate in Rate.query.all()]
+        data['flashcards'] = [flashcard.read() for flashcard in Flashcard.query.all()]
         data['team_members'] = [team_member.read() for team_member in TeamMember.query.all()]
         # data['titanic'] = [titanic.read() for titanic in TitanicModel.query.all()]
         data['languages'] = [language.read() for language in Language.query.all()]
@@ -379,7 +390,7 @@ def save_data_to_json(data, directory='backup'):
 # Load data from JSON files
 def load_data_from_json(directory='backup'):
     data = {}
-    for table in ['polls', 'users', 'sections', 'groups', 'channels', 'school_classes', 'votes', 'team_members', 'top_interests', 'chat', 'languages']:
+    for table in ['polls', 'users', 'sections', 'groups', 'channels', 'school_classes', 'votes', 'team_members', 'rates','flashcards' 'top_interests', 'chat', 'languages']:
         with open(os.path.join(directory, f'{table}.json'), 'r') as f:
             data[table] = json.load(f)
     return data
@@ -395,6 +406,8 @@ def restore_data(data):
         _ = Vote.restore(data['votes'])
         _ = TeamMember.restore(data['team_members'])
         _ = Chat.restore(data['chat'])
+        _ = Rate.restore(data['rates'])
+        _ = Flashcard.restore(data['flashcards'])
         # _ = Player.restore(data['player'])
         _ = TopInterest.restore(data['top_interests'])
         _ = Language.restore(data['languages'])
