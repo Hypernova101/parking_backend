@@ -12,6 +12,10 @@ import shutil
 
 from functools import wraps
 from flask_socketio import SocketIO, send, emit
+from flask_socketio import join_room, leave_room
+
+players_by_room = {}
+
 
 # import "objects" from "this" project
 from __init__ import app, db, login_manager  # Key Flask objects 
@@ -320,17 +324,50 @@ def handle_player_score(data):
     leaderboard = sorted(players, key=lambda x: x["score"], reverse=True)
     emit("leaderboard_update", leaderboard, broadcast=True)
 
+@socketio.on("join_room")
+def handle_join_room(data):
+    name = data.get("name")
+    room = data.get("room")
+    join_room(room)
+
+    if room not in players_by_room:
+        players_by_room[room] = []
+    
+    # Prevent duplicate joins
+    if not any(p["name"] == name for p in players_by_room[room]):
+        players_by_room[room].append({"name": name, "score": 0})
+
+    emit("player_joined", {"name": name}, to=room)
+
+@socketio.on("player_score")
+def handle_player_score(data):
+    name = data.get("name")
+    room = data.get("room")
+    score = data.get("score", 0)
+
+    for p in players_by_room.get(room, []):
+        if p["name"] == name:
+            p["score"] = score
+            break
+
+    leaderboard = sorted(players_by_room[room], key=lambda x: x["score"], reverse=True)
+    emit("leaderboard_update", leaderboard, to=room)
+
 @socketio.on("clear_leaderboard")
-def handle_clear_leaderboard():
-    global players
-    players = []
-    emit("leaderboard_update", players, broadcast=True)
+def handle_clear_leaderboard(data):
+    room = data.get("room")
+    players_by_room[room] = []
+    emit("leaderboard_update", [], to=room)
 
 @socketio.on("get_leaderboard")
-def handle_get_leaderboard():
-    # Sort and emit current leaderboard
-    leaderboard = sorted(players, key=lambda x: x["score"], reverse=True)
-    emit("leaderboard_update", leaderboard)
+def handle_get_leaderboard(data):
+    room = data.get("room")
+    leaderboard = sorted(players_by_room.get(room, []), key=lambda x: x["score"], reverse=True)
+    emit("leaderboard_update", leaderboard, to=room)
+
+
+
+
 
 
 
