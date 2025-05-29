@@ -295,7 +295,8 @@ custom_cli = AppGroup('custom', help='Custom commands')
 socketio = SocketIO(app, cors_allowed_origins=[
     "https://hypernova101.github.io",
     "http://localhost:8000",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
+    "https://adik1025.github.io"
 ])
 
 
